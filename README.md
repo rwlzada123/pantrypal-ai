@@ -15,10 +15,10 @@ The application is designed for students, busy professionals, families, and anyo
 - [AI Feature](#-ai-feature)
 - [Technologies Used](#-technologies-used)
 - [Screenshots](#-screenshots)
-- [How It Works](-how-it-works)
+- [How It Works](#-how-it-works)
 - [Installation](#-installation)
 - [Environment Variables](#-environment-variables)
-- [Future Improvements](#-future-improvements)
+- [Future Work](#-future-work)
 
 
 
