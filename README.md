@@ -13,12 +13,15 @@ The application is designed for students, busy professionals, families, and anyo
 - [Target Users](#-target-users)
 - [Features](#-features)
 - [AI Feature](#-ai-feature)
+- [Prompt Used](#-prompt-used)
 - [Technologies Used](#-technologies-used)
 - [Screenshots](#-screenshots)
 - [How It Works](#-how-it-works)
 - [Installation](#-installation)
+- [Project Structure](#-project-structure)
 - [Environment Variables](#-environment-variables)
 - [Future Work](#-future-work)
+- [Author](#-author)
 
 
 
