@@ -18,13 +18,14 @@ const initialPreferences = {
 
 function App() {
   const [ingredients, setIngredients] = useState([]);
-  const [preferences, setPreferences] = useState(initialPreferences);
+  const [preferences, setPreferences] =
+    useState(initialPreferences);
 
   const [recipe, setRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     if (ingredients.length < 2) {
@@ -36,59 +37,46 @@ function App() {
     setRecipe(null);
     setIsLoading(true);
 
-    const fakeRecipe = {
-      title: "Creamy Pantry Chicken and Rice",
-      description:
-        "A comforting one-pan meal using simple pantry ingredients.",
-      preparationTime: 10,
-      cookingTime: 25,
-      totalTime: 35,
-      servings: preferences.servings,
-      difficulty: preferences.skillLevel,
-      ingredients: [
-        `${preferences.servings} cups cooked rice`,
-        "300 g chicken breast, sliced",
-        "2 tomatoes, chopped",
-        "1 small onion, diced",
-        "2 cloves garlic, minced",
-        "1 tablespoon cooking oil",
-        "1 teaspoon paprika",
-        "Salt and black pepper to taste",
-      ],
-      instructions: [
-        "Heat the oil in a large pan over medium heat.",
-        "Add the onion and cook for 3 minutes until softened.",
-        "Add the garlic and chicken. Cook until the chicken is lightly browned.",
-        "Add the tomatoes, paprika, salt, and black pepper.",
-        "Cook for 8–10 minutes until the chicken is fully cooked.",
-        "Add the cooked rice and stir everything together.",
-        "Cook for another 3 minutes, then serve warm.",
-      ],
-      substitutions: [
-        "Replace chicken with chickpeas for a vegetarian version.",
-        "Use pasta instead of rice if needed.",
-      ],
-      wasteTip:
-        "Store leftover portions in an airtight container and refrigerate for up to two days.",
-      nutrition: {
-        calories: 520,
-        protein: 38,
-        carbohydrates: 58,
-        fat: 15,
-        fiber: 6,
-      },
-    };
+    try {
+      const response = await fetch("/api/generate-meal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ingredients,
+          preferences,
+        }),
+      });
 
-    setTimeout(() => {
-      setRecipe(fakeRecipe);
-      setIsLoading(false);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Recipe generation failed."
+        );
+      }
+
+      setRecipe(data.recipe);
 
       setTimeout(() => {
         document
           .getElementById("recipe-result")
-          ?.scrollIntoView({ behavior: "smooth" });
+          ?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
       }, 100);
-    }, 1800);
+    } catch (requestError) {
+      console.error(requestError);
+
+      setError(
+        requestError.message ||
+          "Something went wrong. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function handleReset() {
@@ -96,6 +84,11 @@ function App() {
     setPreferences(initialPreferences);
     setRecipe(null);
     setError("");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }
 
   return (
