@@ -18,6 +18,7 @@ The application is designed for students, busy professionals, families, and anyo
 - [Installation](#-installation)
 - [Environment Variables](#-environment-variables)
 - [Future Improvements](#-future-improvements)
+- [How It Works](-how-it-works)
 
 
 ---
