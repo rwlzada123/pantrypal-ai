@@ -189,12 +189,25 @@ The model is instructed to return only structured JSON for reliable parsing.
 
 ---
 
+# 🔄 How It Works
+
+1. Enter the ingredients available in your kitchen.
+2. Select your cooking preferences.
+3. Submit the request.
+4. PantryPal AI sends the request to a Vercel Serverless Function.
+5. The server securely communicates with the Gemini API.
+6. The AI generates a structured recipe.
+7. The recipe is displayed and can be saved for future use.
+
+
+---
+
 #  Installation
 
 Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/pantrypal-ai.git
+git clone https://github.com/rwlzada123/pantrypal-ai
 ```
 
 Move into the project
@@ -227,16 +240,16 @@ npm run dev
 #  Project Structure
 
 ```
+src/
+├── components/
+├── App.jsx
+├── main.jsx
+
 api/
-    generate-meal.js
+└── generate-meal.js
 
 public/
-
-src/
-    App.jsx
-    main.jsx
-
-package.json
+└── screenshots/
 
 README.md
 ```
@@ -264,7 +277,6 @@ No API keys are stored inside the repository.
 Potential future enhancements include:
 
 - User accounts
-- Saved favorite recipes
 - Weekly meal planner
 - Shopping list generation
 - Barcode ingredient scanner
