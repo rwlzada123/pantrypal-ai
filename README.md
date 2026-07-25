@@ -80,6 +80,8 @@ The application currently includes:
 - Food waste reduction tips
 - Responsive user interface
 - Live deployment
+- Save favorite recipes locally
+- View saved recipes later
 
 ---
 
