@@ -1,6 +1,10 @@
 import { ChefHat, Heart } from "lucide-react";
 
-function Header() {
+function Header({
+  savedCount,
+  activeView,
+  setActiveView,
+}) {
   return (
     <header className="site-header">
       <div className="brand">
@@ -14,12 +18,26 @@ function Header() {
       </div>
 
       <nav className="main-nav">
-        <button className="nav-link active">Meal Generator</button>
+        <button
+          className={`nav-link ${
+            activeView === "generator" ? "active" : ""
+          }`}
+          onClick={() => setActiveView("generator")}
+        >
+          Meal Generator
+        </button>
 
-        <button className="nav-link">
+        <button
+          className={`nav-link ${
+            activeView === "saved" ? "active" : ""
+          }`}
+          onClick={() => setActiveView("saved")}
+        >
           <Heart size={17} />
           Saved
-          <span className="saved-count">0</span>
+          <span className="saved-count">
+            {savedCount}
+          </span>
         </button>
       </nav>
     </header>

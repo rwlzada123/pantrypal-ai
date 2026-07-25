@@ -1,6 +1,7 @@
 import {
   ChefHat,
   Clock3,
+  Heart,
   Lightbulb,
   RotateCcw,
   Sparkles,
@@ -9,7 +10,12 @@ import {
 
 import NutritionCard from "./NutritionCard";
 
-function RecipeCard({ recipe, onReset }) {
+function RecipeCard({
+  recipe,
+  onReset,
+  onSave,
+  isSaved,
+}) {
   return (
     <section className="recipe-section" id="recipe-result">
       <div className="recipe-header">
@@ -23,14 +29,26 @@ function RecipeCard({ recipe, onReset }) {
           <p>{recipe.description}</p>
         </div>
 
-        <button
-          type="button"
-          className="new-recipe-button"
-          onClick={onReset}
-        >
-          <RotateCcw size={17} />
-          Start again
-        </button>
+        <div className="recipe-actions">
+          <button
+            type="button"
+            className="save-recipe-button"
+            onClick={() => onSave(recipe)}
+            disabled={isSaved}
+          >
+            <Heart size={17} />
+            {isSaved ? "Saved" : "Save recipe"}
+          </button>
+
+          <button
+            type="button"
+            className="new-recipe-button"
+            onClick={onReset}
+          >
+            <RotateCcw size={17} />
+            Start again
+          </button>
+        </div>
       </div>
 
       <div className="recipe-meta">
@@ -67,7 +85,7 @@ function RecipeCard({ recipe, onReset }) {
 
             <ol className="instruction-list">
               {recipe.instructions.map((instruction, index) => (
-                <li key={instruction}>
+                <li key={`${instruction}-${index}`}>
                   <span>{index + 1}</span>
                   <p>{instruction}</p>
                 </li>
@@ -79,8 +97,10 @@ function RecipeCard({ recipe, onReset }) {
             <h3>Easy substitutions</h3>
 
             <ul>
-              {recipe.substitutions.map((substitution) => (
-                <li key={substitution}>{substitution}</li>
+              {recipe.substitutions.map((substitution, index) => (
+                <li key={`${substitution}-${index}`}>
+                  {substitution}
+                </li>
               ))}
             </ul>
           </section>

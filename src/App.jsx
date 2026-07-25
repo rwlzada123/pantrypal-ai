@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import MealForm from "./components/MealForm";
 import LoadingRecipe from "./components/LoadingRecipe";
 import RecipeCard from "./components/RecipeCard";
 import "./App.css";
+
 
 const initialPreferences = {
   mealType: "Any",
@@ -24,6 +25,12 @@ function App() {
   const [recipe, setRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [activeView, setActiveView] = useState("generator");
+  const [savedRecipes, setSavedRecipes] = useState([]);
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("savedRecipes")) || [];
+    setSavedRecipes(saved);
+    }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -91,32 +98,106 @@ function App() {
     });
   }
 
+  function handleSaveRecipe(recipeToSave) {
+  const alreadySaved = savedRecipes.some(
+    (savedRecipe) =>
+      savedRecipe.title === recipeToSave.title &&
+      savedRecipe.description === recipeToSave.description
+  );
+
+  if (alreadySaved) {
+    return;
+  }
+
+  const updatedRecipes = [...savedRecipes, recipeToSave];
+
+  setSavedRecipes(updatedRecipes);
+
+  localStorage.setItem(
+    "savedRecipes",
+    JSON.stringify(updatedRecipes)
+  );
+}
   return (
     <div className="app">
-      <Header />
-
-      <main>
-        <Hero />
-
-        <MealForm
-          ingredients={ingredients}
-          setIngredients={setIngredients}
-          preferences={preferences}
-          setPreferences={setPreferences}
-          onSubmit={handleSubmit}
-          error={error}
-          isLoading={isLoading}
+      <Header
+        savedCount={savedRecipes.length}
+        activeView={activeView}
+        setActiveView={setActiveView}
         />
 
-        {isLoading && <LoadingRecipe />}
+      <main>
+  {activeView === "generator" && (
+    <>
+      <Hero />
 
-        {recipe && (
-          <RecipeCard
-            recipe={recipe}
-            onReset={handleReset}
-          />
-        )}
-      </main>
+      <MealForm
+        ingredients={ingredients}
+        setIngredients={setIngredients}
+        preferences={preferences}
+        setPreferences={setPreferences}
+        onSubmit={handleSubmit}
+        error={error}
+        isLoading={isLoading}
+      />
+
+      {isLoading && <LoadingRecipe />}
+
+      {recipe && (
+        <RecipeCard
+          recipe={recipe}
+          onReset={handleReset}
+          onSave={handleSaveRecipe}
+          isSaved={savedRecipes.some(
+            (savedRecipe) =>
+              savedRecipe.title === recipe.title &&
+              savedRecipe.description === recipe.description
+          )}
+        />
+      )}
+    </>
+  )}
+
+  {activeView === "saved" && (
+    <section className="saved-recipes-section">
+      <h1>Saved Recipes</h1>
+
+      {savedRecipes.length === 0 ? (
+        <p>You have not saved any recipes yet.</p>
+      ) : (
+        <div className="saved-recipes-grid">
+          {savedRecipes.map((savedRecipe, index) => (
+            <article
+              className="saved-recipe-card"
+              key={`${savedRecipe.title}-${index}`}
+            >
+              <h2>{savedRecipe.title}</h2>
+              <p>{savedRecipe.description}</p>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setRecipe(savedRecipe);
+                  setActiveView("generator");
+
+                  setTimeout(() => {
+                    document
+                      .getElementById("recipe-result")
+                      ?.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                  }, 100);
+                }}
+              >
+                View recipe
+              </button>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  )}
+</main>
     </div>
   );
 }
