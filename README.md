@@ -4,6 +4,22 @@ PantryPal AI is an intelligent meal planning application that helps users create
 
 The application is designed for students, busy professionals, families, and anyone who wants to reduce food waste while preparing quick and delicious meals.
 
+--- 
+
+## Table of Contents
+
+- [Live Application](#-live-application)
+- [Problem Statement](#-problem-statement)
+- [Target Users](#-target-users)
+- [Features](#-features)
+- [AI Feature](#-ai-feature)
+- [Technologies Used](#-technologies-used)
+- [Screenshots](#-screenshots)
+- [Installation](#-installation)
+- [Environment Variables](#-environment-variables)
+- [Future Improvements](#-future-improvements)
+
+
 ---
 
 # 🌍 Live Application
