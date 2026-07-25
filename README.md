@@ -149,25 +149,25 @@ The model is instructed to return only structured JSON for reliable parsing.
 
 ## Home Page
 
-![Home Page](screenshots/home.png)
+![Home Page](public/screenshots/home.png)
 
 ---
 
 ## Recipe Preferences
 
-![Preferences](screenshots/form.png)
+![Preferences](public/screenshots/form.png)
 
 ---
 
 ## Generated Recipe
 
-![Recipe](screenshots/recipe.png)
+![Recipe](public/screenshots/recipe.png)
 
 ---
 
 ## Nutrition Information
 
-![Nutrition](screenshots/nutrition.png)
+![Nutrition](public/screenshots/nutrition.png)
 
 ---
 
