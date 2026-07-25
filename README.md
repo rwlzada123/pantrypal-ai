@@ -101,7 +101,7 @@ Users provide:
 
 The application sends these details to Google's Gemini API using a carefully designed prompt.
 
-The AI returns structured JSON containing:
+The application communicates with Google's Gemini API through a Vercel Serverless Function. The prompt combines the user's ingredients and preferences before requesting a structured JSON response, ensuring reliable parsing and consistent formatting containing:
 
 - recipe title
 - description
