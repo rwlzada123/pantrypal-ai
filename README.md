@@ -26,13 +26,13 @@ The application is designed for students, busy professionals, families, and anyo
 
 **Live Demo**
 
-https://YOUR-VERCEL-LINK.vercel.app
+https://pantrypal-ai-blush.vercel.app/
 
 ---
 
 # 💻 GitHub Repository
 
-https://github.com/YOUR_USERNAME/pantrypal-ai
+https://github.com/rwlzada123/pantrypal-ai
 
 ---
 
