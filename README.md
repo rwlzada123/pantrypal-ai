@@ -259,7 +259,7 @@ No API keys are stored inside the repository.
 
 ---
 
-#  Future Improvements
+#  Future Work
 
 Potential future enhancements include:
 
