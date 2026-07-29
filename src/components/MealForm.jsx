@@ -17,6 +17,7 @@ import {
   diets,
   mealTypes,
   skillLevels,
+  servingsOptions,
 } from "../data/options";
 
 function MealForm({
@@ -166,7 +167,7 @@ function MealForm({
               value={preferences.servings}
               onChange={handleChange}
             >
-              {[1, 2, 3, 4, 5, 6].map((number) => (
+              {servingsOptions.map((number) => (
                 <option value={number} key={number}>
                   {number}
                 </option>

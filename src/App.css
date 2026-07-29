@@ -295,6 +295,96 @@
   }
 }
 
+.settings-card {
+  margin-top: 30px;
+}
+
+.settings-subheading {
+  margin: 0;
+
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.settings-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 17px;
+}
+
+.text-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.text-input {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 13px;
+
+  color: var(--text);
+  background: #fffdfa;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.field-error {
+  margin: 6px 0 0;
+
+  color: #a33a2b;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.save-status {
+  margin-top: 20px;
+  padding: 12px 14px;
+
+  color: #28695f;
+  background: #e7f6f2;
+
+  border: 1px solid #cae9e2;
+  border-radius: 13px;
+
+  font-weight: 600;
+}
+
+.settings-actions {
+  margin-top: 24px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.secondary-button {
+  min-height: 58px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--primary-dark);
+  background: #fff1e9;
+
+  border: 1px solid #f5d6c6;
+  border-radius: 16px;
+
+  font-weight: 700;
+}
+
+.settings-save-button {
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  .settings-profile-grid,
+  .settings-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 .generator-card {
   width: min(1100px, calc(100% - 32px));
   margin: 30px auto 80px;

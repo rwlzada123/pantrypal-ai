@@ -28,6 +28,8 @@ export const budgetOptions = [
   "Flexible",
 ];
 
+export const servingsOptions = [1, 2, 3, 4, 5, 6];
+
 export const allergyOptions = [
   "Dairy",
   "Eggs",

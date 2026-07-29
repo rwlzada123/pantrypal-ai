@@ -4,33 +4,42 @@ import Hero from "./components/Hero";
 import MealForm from "./components/MealForm";
 import LoadingRecipe from "./components/LoadingRecipe";
 import RecipeCard from "./components/RecipeCard";
+import SettingsForm from "./components/SettingsForm";
+import {
+  DEFAULT_SETTINGS,
+  extractMealPreferences,
+  loadSettings,
+} from "./utils/settings";
 import "./App.css";
-
-
-const initialPreferences = {
-  mealType: "Any",
-  diet: "No preference",
-  cookingTime: 30,
-  skillLevel: "Beginner",
-  servings: 2,
-  budget: "Low",
-  allergies: [],
-};
 
 function App() {
   const [ingredients, setIngredients] = useState([]);
-  const [preferences, setPreferences] =
-    useState(initialPreferences);
+  const [preferences, setPreferences] = useState(() =>
+    extractMealPreferences(DEFAULT_SETTINGS)
+  );
 
   const [recipe, setRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [activeView, setActiveView] = useState("generator");
   const [savedRecipes, setSavedRecipes] = useState([]);
+  const [lastSavedSettings, setLastSavedSettings] = useState(DEFAULT_SETTINGS);
+  const [settingsDraft, setSettingsDraft] = useState(DEFAULT_SETTINGS);
+
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("savedRecipes")) || [];
     setSavedRecipes(saved);
-    }, []);
+  }, []);
+
+  useEffect(() => {
+    const loadedSettings = loadSettings();
+    setLastSavedSettings(loadedSettings);
+    setSettingsDraft({
+      ...loadedSettings,
+      allergies: [...loadedSettings.allergies],
+    });
+    setPreferences(extractMealPreferences(loadedSettings));
+  }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -88,7 +97,7 @@ function App() {
 
   function handleReset() {
     setIngredients([]);
-    setPreferences(initialPreferences);
+    setPreferences(extractMealPreferences(lastSavedSettings));
     setRecipe(null);
     setError("");
 
@@ -99,105 +108,132 @@ function App() {
   }
 
   function handleSaveRecipe(recipeToSave) {
-  const alreadySaved = savedRecipes.some(
-    (savedRecipe) =>
-      savedRecipe.title === recipeToSave.title &&
-      savedRecipe.description === recipeToSave.description
-  );
+    const alreadySaved = savedRecipes.some(
+      (savedRecipe) =>
+        savedRecipe.title === recipeToSave.title &&
+        savedRecipe.description === recipeToSave.description
+    );
 
-  if (alreadySaved) {
-    return;
+    if (alreadySaved) {
+      return;
+    }
+
+    const updatedRecipes = [...savedRecipes, recipeToSave];
+
+    setSavedRecipes(updatedRecipes);
+
+    localStorage.setItem(
+      "savedRecipes",
+      JSON.stringify(updatedRecipes)
+    );
   }
 
-  const updatedRecipes = [...savedRecipes, recipeToSave];
+  function handleSettingsSave(savedSettings) {
+    setLastSavedSettings(savedSettings);
+    setSettingsDraft({
+      ...savedSettings,
+      allergies: [...savedSettings.allergies],
+    });
+    setPreferences(extractMealPreferences(savedSettings));
+  }
 
-  setSavedRecipes(updatedRecipes);
+  function handleSettingsReset() {
+    setSettingsDraft({
+      ...lastSavedSettings,
+      allergies: [...lastSavedSettings.allergies],
+    });
+  }
 
-  localStorage.setItem(
-    "savedRecipes",
-    JSON.stringify(updatedRecipes)
-  );
-}
   return (
     <div className="app">
       <Header
         savedCount={savedRecipes.length}
         activeView={activeView}
         setActiveView={setActiveView}
-        />
-
-      <main>
-  {activeView === "generator" && (
-    <>
-      <Hero />
-
-      <MealForm
-        ingredients={ingredients}
-        setIngredients={setIngredients}
-        preferences={preferences}
-        setPreferences={setPreferences}
-        onSubmit={handleSubmit}
-        error={error}
-        isLoading={isLoading}
       />
 
-      {isLoading && <LoadingRecipe />}
+      <main>
+        {activeView === "generator" && (
+          <>
+            <Hero />
 
-      {recipe && (
-        <RecipeCard
-          recipe={recipe}
-          onReset={handleReset}
-          onSave={handleSaveRecipe}
-          isSaved={savedRecipes.some(
-            (savedRecipe) =>
-              savedRecipe.title === recipe.title &&
-              savedRecipe.description === recipe.description
-          )}
-        />
-      )}
-    </>
-  )}
+            <MealForm
+              ingredients={ingredients}
+              setIngredients={setIngredients}
+              preferences={preferences}
+              setPreferences={setPreferences}
+              onSubmit={handleSubmit}
+              error={error}
+              isLoading={isLoading}
+            />
 
-  {activeView === "saved" && (
-    <section className="saved-recipes-section">
-      <h1>Saved Recipes</h1>
+            {isLoading && <LoadingRecipe />}
 
-      {savedRecipes.length === 0 ? (
-        <p>You have not saved any recipes yet.</p>
-      ) : (
-        <div className="saved-recipes-grid">
-          {savedRecipes.map((savedRecipe, index) => (
-            <article
-              className="saved-recipe-card"
-              key={`${savedRecipe.title}-${index}`}
-            >
-              <h2>{savedRecipe.title}</h2>
-              <p>{savedRecipe.description}</p>
+            {recipe && (
+              <RecipeCard
+                recipe={recipe}
+                onReset={handleReset}
+                onSave={handleSaveRecipe}
+                isSaved={savedRecipes.some(
+                  (savedRecipe) =>
+                    savedRecipe.title === recipe.title &&
+                    savedRecipe.description === recipe.description
+                )}
+              />
+            )}
+          </>
+        )}
 
-              <button
-                type="button"
-                onClick={() => {
-                  setRecipe(savedRecipe);
-                  setActiveView("generator");
+        {activeView === "saved" && (
+          <section className="saved-recipes-section">
+            <h1>Saved Recipes</h1>
 
-                  setTimeout(() => {
-                    document
-                      .getElementById("recipe-result")
-                      ?.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                  }, 100);
-                }}
-              >
-                View recipe
-              </button>
-            </article>
-          ))}
-        </div>
-      )}
-    </section>
-  )}
-</main>
+            {savedRecipes.length === 0 ? (
+              <p>You have not saved any recipes yet.</p>
+            ) : (
+              <div className="saved-recipes-grid">
+                {savedRecipes.map((savedRecipe, index) => (
+                  <article
+                    className="saved-recipe-card"
+                    key={`${savedRecipe.title}-${index}`}
+                  >
+                    <h2>{savedRecipe.title}</h2>
+                    <p>{savedRecipe.description}</p>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRecipe(savedRecipe);
+                        setActiveView("generator");
+
+                        setTimeout(() => {
+                          document
+                            .getElementById("recipe-result")
+                            ?.scrollIntoView({
+                              behavior: "smooth",
+                            });
+                        }, 100);
+                      }}
+                    >
+                      View recipe
+                    </button>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {activeView === "settings" && (
+          <SettingsForm
+            values={settingsDraft}
+            onChange={setSettingsDraft}
+            savedValues={lastSavedSettings}
+            onSave={handleSettingsSave}
+            onReset={handleSettingsReset}
+          />
+        )}
+      </main>
     </div>
   );
 }
