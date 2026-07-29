@@ -1,4 +1,4 @@
-import { ChefHat, Heart } from "lucide-react";
+import { ChefHat, Heart, Settings } from "lucide-react";
 
 function Header({
   savedCount,
@@ -38,6 +38,16 @@ function Header({
           <span className="saved-count">
             {savedCount}
           </span>
+        </button>
+
+        <button
+          className={`nav-link ${
+            activeView === "settings" ? "active" : ""
+          }`}
+          onClick={() => setActiveView("settings")}
+        >
+          <Settings size={17} />
+          Settings
         </button>
       </nav>
     </header>

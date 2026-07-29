@@ -1,36 +1,65 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import MealForm from "./components/MealForm";
 import LoadingRecipe from "./components/LoadingRecipe";
 import RecipeCard from "./components/RecipeCard";
+import SettingsForm from "./components/SettingsForm";
+import {
+  defaultPreferences,
+  defaultSettings,
+  SETTINGS_STORAGE_KEY,
+} from "./data/defaultSettings";
 import "./App.css";
 
+function loadSavedRecipes() {
+  try {
+    return JSON.parse(localStorage.getItem("savedRecipes")) || [];
+  } catch {
+    return [];
+  }
+}
 
-const initialPreferences = {
-  mealType: "Any",
-  diet: "No preference",
-  cookingTime: 30,
-  skillLevel: "Beginner",
-  servings: 2,
-  budget: "Low",
-  allergies: [],
-};
+function loadStoredSettings() {
+  try {
+    const stored = JSON.parse(
+      localStorage.getItem(SETTINGS_STORAGE_KEY)
+    );
+
+    if (!stored || typeof stored !== "object") {
+      return defaultSettings;
+    }
+
+    return {
+      profile: {
+        ...defaultSettings.profile,
+        ...stored.profile,
+      },
+      defaultPreferences: {
+        ...defaultPreferences,
+        ...stored.defaultPreferences,
+        allergies: Array.isArray(stored.defaultPreferences?.allergies)
+          ? stored.defaultPreferences.allergies
+          : defaultPreferences.allergies,
+      },
+    };
+  } catch {
+    return defaultSettings;
+  }
+}
 
 function App() {
+  const [settings, setSettings] = useState(loadStoredSettings);
   const [ingredients, setIngredients] = useState([]);
-  const [preferences, setPreferences] =
-    useState(initialPreferences);
+  const [preferences, setPreferences] = useState(
+    () => loadStoredSettings().defaultPreferences
+  );
 
   const [recipe, setRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [activeView, setActiveView] = useState("generator");
-  const [savedRecipes, setSavedRecipes] = useState([]);
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("savedRecipes")) || [];
-    setSavedRecipes(saved);
-    }, []);
+  const [savedRecipes, setSavedRecipes] = useState(loadSavedRecipes);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -88,7 +117,7 @@ function App() {
 
   function handleReset() {
     setIngredients([]);
-    setPreferences(initialPreferences);
+    setPreferences(settings.defaultPreferences);
     setRecipe(null);
     setError("");
 
@@ -96,6 +125,16 @@ function App() {
       top: 0,
       behavior: "smooth",
     });
+  }
+
+  function handleSaveSettings(updatedSettings) {
+    setSettings(updatedSettings);
+    setPreferences(updatedSettings.defaultPreferences);
+
+    localStorage.setItem(
+      SETTINGS_STORAGE_KEY,
+      JSON.stringify(updatedSettings)
+    );
   }
 
   function handleSaveRecipe(recipeToSave) {
@@ -156,6 +195,13 @@ function App() {
         />
       )}
     </>
+  )}
+
+  {activeView === "settings" && (
+    <SettingsForm
+      settings={settings}
+      onSave={handleSaveSettings}
+    />
   )}
 
   {activeView === "saved" && (
