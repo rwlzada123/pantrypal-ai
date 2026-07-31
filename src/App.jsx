@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import MealForm from "./components/MealForm";
@@ -6,7 +6,6 @@ import LoadingRecipe from "./components/LoadingRecipe";
 import RecipeCard from "./components/RecipeCard";
 import SettingsForm from "./components/SettingsForm";
 import {
-  DEFAULT_SETTINGS,
   extractMealPreferences,
   loadSettings,
 } from "./utils/settings";
@@ -14,32 +13,34 @@ import "./App.css";
 
 function App() {
   const [ingredients, setIngredients] = useState([]);
+  const [initialSettings] = useState(() => loadSettings());
+
   const [preferences, setPreferences] = useState(() =>
-    extractMealPreferences(DEFAULT_SETTINGS)
+    extractMealPreferences(initialSettings)
   );
 
   const [recipe, setRecipe] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [activeView, setActiveView] = useState("generator");
-  const [savedRecipes, setSavedRecipes] = useState([]);
-  const [lastSavedSettings, setLastSavedSettings] = useState(DEFAULT_SETTINGS);
-  const [settingsDraft, setSettingsDraft] = useState(DEFAULT_SETTINGS);
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("savedRecipes")) || [];
-    setSavedRecipes(saved);
-  }, []);
+  const [savedRecipes, setSavedRecipes] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("savedRecipes")) || [];
+    } catch {
+      return [];
+    }
+  });
 
-  useEffect(() => {
-    const loadedSettings = loadSettings();
-    setLastSavedSettings(loadedSettings);
-    setSettingsDraft({
-      ...loadedSettings,
-      allergies: [...loadedSettings.allergies],
-    });
-    setPreferences(extractMealPreferences(loadedSettings));
-  }, []);
+  const [lastSavedSettings, setLastSavedSettings] = useState(() => ({
+    ...initialSettings,
+    allergies: [...initialSettings.allergies],
+  }));
+
+  const [settingsDraft, setSettingsDraft] = useState(() => ({
+    ...initialSettings,
+    allergies: [...initialSettings.allergies],
+  }));
 
   async function handleSubmit(event) {
     event.preventDefault();
