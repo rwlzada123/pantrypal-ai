@@ -1,20 +1,14 @@
 # CLAUDE.md
 
-## Project Guidelines
+## PantryPal Project Rules
 
-### 1. Reuse existing code whenever possible
-Before creating new components, utilities, or data structures, check whether similar functionality already exists in the project. Reuse existing code instead of duplicating it.
+1. Meal preferences must be stored through `utils/settings.js`. Do not duplicate localStorage logic in components.
 
-### 2. Verify all changes before finishing
-After implementing a feature, always run:
-- `npm test`
-- `npm run lint`
-- `npm run build`
+2. Every form must use controlled React inputs, validate user input before saving, and provide accessible labels and error messages.
 
-Do not consider a task complete unless all three commands succeed.
+3. Before considering any feature complete, run:
+   - npm test
+   - npm run lint
+   - npm run build
 
-### 3. Preserve accessibility and validation
-All form inputs should include proper labels and accessible error messages. User input must be validated before being saved or submitted.
-
-### 4. Keep components focused
-Each component should have a single responsibility. Shared logic should be moved into utility functions when appropriate to keep components readable and maintainable.
+4. Reuse existing option lists (diet, cuisine, meal type, allergies) from `src/data/options.js` instead of creating duplicates.
